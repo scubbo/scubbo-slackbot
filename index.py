@@ -29,7 +29,7 @@ def handler(event, context):
       for card in ALL_CARDS:
         if all([c in card['title'].lower() for c in match.lower().split()]):
           print 'all condition was matched'
-          sc = slackClient(os.environ['responseToken'])
+          sc = SlackClient(os.environ['responseToken'])
           attachment = {
             'image_url': 'https://netrunnerdb.com/card_image/' + card['code'],
             'title': card['title']
