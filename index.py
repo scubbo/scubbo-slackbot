@@ -31,7 +31,7 @@ def handler(event, context):
           print 'all condition was matched'
           sc = SlackClient(os.environ['responseToken'])
           attachment = {
-            'image_url': 'https://netrunnerdb.com/card_image/' + card['code'],
+            'image_url': 'https://netrunnerdb.com/card_image/' + card['code'] + '.png',
             'title': card['title']
           }
           sc.send_attachments_threaded_reply(channel, message_id, attachment)
