@@ -2,13 +2,18 @@ import json
 import requests
 import types
 
-class DebugPrintDecorator:
+class DebugPrintDecorator(object):
   def __init__(self, f):
     self.f = f
+
   def __call__(self, *args, **kwargs):
     response = json.loads(self.f(*args, **kwargs).text)
     if not response['ok']:
-      print 'Error calling ' + self.f.__name__ + ' with args ' + str(args) + ' and kwargs ' + str(kwargs) + ': ' + response
+      print 'Error calling ' + self.f.__name__ + ' with args ' + str(args) + ' and kwargs ' + str(kwargs) + ': ' + str(response)
+
+  # https://stackoverflow.com/questions/30104047/how-can-i-decorate-an-instance-method-with-a-decorator-class
+  def __get__(self, instance, owner):
+    return types.MethodType(self, instance, owner)
 
 class SlackClient:
 
@@ -22,11 +27,12 @@ class SlackClient:
 
   @DebugPrintDecorator
   def send_message(self, channel, message):
+    '''Arguably, this (and the attachments version, below) could have delegated to their appropriate threaded version if it contained logic to only set the thread_ts if present. But I wanted the signatures to clearly demonstrate intended usage'''
     data = {
       'text': message,
       'channel': channel
     }
-    return _post_to_post_message(data)
+    return self._post_to_post_message(data)
 
   @DebugPrintDecorator
   def send_threaded_reply(self, channel, parent_message_id, message):
@@ -35,7 +41,7 @@ class SlackClient:
       'channel': channel,
       'thread_ts': parent_message_id
     }
-    return _post_to_post_message(data)
+    return self._post_to_post_message(data)
 
   @DebugPrintDecorator
   def send_attachments(self, channel, attachments, message=None):
@@ -50,7 +56,7 @@ class SlackClient:
       data['text'] = message
     for attachment in attachments:
       data['attachments'].append(attachment)
-    return _post_to_post_message(data)
+    return self._post_to_post_message(data)
 
   @DebugPrintDecorator
   def send_attachments_threaded_reply(self, channel, parent_message_id, attachments, message=None):
@@ -66,7 +72,7 @@ class SlackClient:
       data['text'] = message
     for attachment in attachments:
       data['attachments'].append(attachment)
-    return _post_to_post_message(data)
+    return self._post_to_post_message(data)
 
   def _post_to_post_message(self, data):
     return requests.post(self.POST_MESSAGE_URL, json.dumps(data), headers = self.headers)
