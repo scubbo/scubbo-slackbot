@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os, re, sys
 import urllib2
+import requests
 from json import loads, dumps
 sys.path.append('lib')
 from slackClient import SlackClient
@@ -31,7 +32,7 @@ def handler(event, context):
           print 'all condition was matched'
           sc = SlackClient(os.environ['responseToken'])
           attachment = {
-            'image_url': 'https://netrunnerdb.com/card_image/' + card['code'] + '.png',
+            'image_url': getImageUrl(card['code']),
             'title': card['title']
           }
           sc.send_attachments_threaded_reply(channel, message_id, attachment)
@@ -43,3 +44,6 @@ def handler(event, context):
     "headers": {"Content-Type":"application/json"},
     "body": 'I hear ya'
   }
+
+def getImageUrl(cardId):
+  return loads(requests.get('https://netrunnerdb.com/api/2.0/public/card/' + cardId).text)['data'][0]['image_url']
