@@ -6,44 +6,18 @@ from json import loads, dumps
 sys.path.append('lib')
 from slackClient import SlackClient
 
-REGEX = re.compile('\[\[(.*?)\]\]')
-ALL_CARDS = loads(urllib2.urlopen('https://netrunnerdb.com/api/2.0/public/cards').read())['data']
-
-with file('abbreviations.json', 'r') as f:
-  ABBREVIATIONS = loads(f.read())
+HANDLER_NAMES = ['NetrunnerCardHandler']
+# Can't define this as a standalone method for some reason - the method can't be found
+HANDLERS = map(lambda x: getattr(__import__(x), x)(), HANDLER_NAMES)
 
 def handler(event, context):
-  text = event['event']['text']
-  channel = event['event']['channel']
-  message_id = event['event']['ts']
+  for handler in HANDLERS:
+    can_handle = handler.can_handle(event)
+    if (can_handle[0]):
+      handler.handle(event, can_handle[1])
 
-  matches = REGEX.findall(text)
-
-  if matches:
-    print 'matches was some'
-    for match in matches:
-      print 'working on ' + str(match)
-      if match in ABBREVIATIONS:
-        print 'match was in ABBREVIATIONS'
-        match = ABBREVIATIONS[match]
-      print 'checking for ' + match
-      for card in ALL_CARDS:
-        if all([c in card['title'].lower() for c in match.lower().split()]):
-          print 'all condition was matched'
-          sc = SlackClient(os.environ['responseToken'])
-          attachment = {
-            'image_url': getImageUrl(card['code']),
-            'title': card['title']
-          }
-          sc.send_attachments_threaded_reply(channel, message_id, attachment)
-          break
-  else:
-    print 'matches was None'
   return {
     "statusCode": 200,
     "headers": {"Content-Type":"application/json"},
     "body": 'I hear ya'
   }
-
-def getImageUrl(cardId):
-  return loads(requests.get('https://netrunnerdb.com/api/2.0/public/card/' + cardId).text)['data'][0]['image_url']

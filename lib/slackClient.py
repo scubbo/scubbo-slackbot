@@ -1,6 +1,5 @@
 import json
 import requests
-import types
 
 class DebugPrintDecorator(object):
   def __init__(self, f):
@@ -9,13 +8,14 @@ class DebugPrintDecorator(object):
   def __call__(self, *args, **kwargs):
     response = json.loads(self.f(*args, **kwargs).text)
     if not response['ok']:
-      print 'Error calling ' + self.f.__name__ + ' with args ' + str(args) + ' and kwargs ' + str(kwargs) + ': ' + str(response)
+      print('Error calling ' + self.f.__name__ + ' with args ' + str(args) + ' and kwargs ' + str(kwargs) + ': ' + str(response))
 
   # https://stackoverflow.com/questions/30104047/how-can-i-decorate-an-instance-method-with-a-decorator-class
   def __get__(self, instance, owner):
-    return types.MethodType(self, instance, owner)
+    from functools import partial
+    return partial(self.__call__, instance)
 
-class SlackClient:
+class SlackClient(object):
 
   POST_MESSAGE_URL = 'https://slack.com/api/chat.postMessage'
 
@@ -46,7 +46,7 @@ class SlackClient:
   @DebugPrintDecorator
   def send_attachments(self, channel, attachments, message=None):
     '''Attachment spec is here: https://api.slack.com/docs/message-attachments#attachment_structure. Note we also accept a single attachment and do not require it to be wrapped in a singleton list'''
-    if type(attachments) == types.DictType:
+    if type(attachments) == dict:
       attachments = [attachments]
     data = {
       'channel': channel,
@@ -61,7 +61,7 @@ class SlackClient:
   @DebugPrintDecorator
   def send_attachments_threaded_reply(self, channel, parent_message_id, attachments, message=None):
     '''Attachment spec is here: https://api.slack.com/docs/message-attachments#attachment_structure. Note we also accept a single attachment and do not require it to be wrapped in a singleton list'''
-    if type(attachments) == types.DictType:
+    if type(attachments) == dict:
       attachments = [attachments]
     data = {
       'channel': channel,
