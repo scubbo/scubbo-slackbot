@@ -5,6 +5,7 @@ phases:
       - pip install -r requirements.txt -t .
   pre_build:
     commands:
+      - export PYTHONPATH=.
       - pytest
   build:
     commands:
