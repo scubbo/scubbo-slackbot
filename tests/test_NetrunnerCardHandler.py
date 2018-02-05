@@ -1,5 +1,5 @@
 import os
-from unittest.mock import patch, mock_open
+from mock import patch, mock_open
 import requests
 from requests_mock import Mocker
 from json import dumps, loads

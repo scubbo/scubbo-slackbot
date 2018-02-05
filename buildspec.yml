@@ -6,7 +6,6 @@ phases:
       - pip install -U pytest
   pre_build:
     commands:
-      - export PYTHONPATH=.
       - pytest
   build:
     commands:
