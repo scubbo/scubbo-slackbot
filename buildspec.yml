@@ -6,7 +6,7 @@ phases:
       - pip install -U pytest
   pre_build:
     commands:
-      - pytest
+      - pytest tests/
   build:
     commands:
       - aws cloudformation package --template-file template.json --s3-bucket {BUCKET_NAME}
