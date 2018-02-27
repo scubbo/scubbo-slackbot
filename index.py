@@ -6,7 +6,7 @@ from json import loads, dumps
 sys.path.append('lib')
 from slackClient import SlackClient
 
-HANDLER_NAMES = ['NetrunnerCardHandler']
+HANDLER_NAMES = ['NetrunnerCardHandler','CoinCoinHandler']
 # Can't define this as a standalone method for some reason - the method can't be found
 HANDLERS = map(lambda x: getattr(__import__(x), x)(), HANDLER_NAMES)
 

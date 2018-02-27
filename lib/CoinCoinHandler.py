@@ -4,6 +4,7 @@ class CoinCoinHandler(object):
   self.SC = SlackClient(os.environ['responseToken'])
 
   def can_handle(self, event):
+    print(event['event'])
     text = event['event']['text']
     match = self.REGEX.match(text)
     if match and event['event']['user'] == 'U1S0XJP0W':
