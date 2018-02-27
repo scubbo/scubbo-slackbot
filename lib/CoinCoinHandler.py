@@ -1,3 +1,5 @@
+import re
+
 class CoinCoinHandler(object):
 
   self.REGEX = re.compile('.*(\S+coin).*')
