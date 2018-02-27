@@ -1,9 +1,12 @@
 import re
+sys.path.append('lib')
+from slackClient import SlackClient
 
 class CoinCoinHandler(object):
 
-  self.REGEX = re.compile('.*(\S+coin).*')
-  self.SC = SlackClient(os.environ['responseToken'])
+  def __init__(self):
+    self.REGEX = re.compile('.*(\S+coin).*')
+    self.SC = SlackClient(os.environ['responseToken'])
 
   def can_handle(self, event):
     print(event['event'])
