@@ -1,6 +1,5 @@
 import re
-sys.path.append('lib')
-from slackClient import SlackClient
+from lib.slackClient import SlackClient
 
 class CoinCoinHandler(object):
 
