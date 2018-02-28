@@ -1,4 +1,4 @@
-import re
+import os, re
 from lib.slackClient import SlackClient
 
 class CoinCoinHandler(object):
