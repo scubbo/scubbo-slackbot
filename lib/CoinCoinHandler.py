@@ -19,4 +19,4 @@ class CoinCoinHandler(object):
   def handle(self, event, match_context):
     channel = event['event']['channel']
     message_id = event['event']['ts']
-    self.SC.send_threaded_reply(self, channel, message_id, "I see you want to know about " + match_context)
+    self.SC.send_threaded_reply(channel, message_id, "I see you want to know about " + match_context)
