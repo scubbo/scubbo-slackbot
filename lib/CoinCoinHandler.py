@@ -4,7 +4,7 @@ from lib.slackClient import SlackClient
 class CoinCoinHandler(object):
 
   def __init__(self):
-    self.REGEX = re.compile('.*(\S+coin).*')
+    self.REGEX = re.compile('^.*?(\S+coin).*')
     self.SC = SlackClient(os.environ['responseToken'])
 
   def can_handle(self, event):
