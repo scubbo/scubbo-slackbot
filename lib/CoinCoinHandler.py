@@ -22,10 +22,12 @@ class CoinCoinHandler(object):
       return (False,)
 
   def handle(self, event, match_context):
+    if event['event']['text'].startswith('Sorry') or event['event']['text'].startswith('Cryptocurrency'):
+      return
     channel = event['event']['channel']
     message_id = event['event']['ts']
     coin = self._find_currency(match_context.lower())
-    if not coin and not event['event']['text'].startswith('Sorry'):
+    if not coin:
       self.SC.send_threaded_reply(channel, message_id, "Sorry, I couldn't find any cryptocurrency named %s" % match_context)
     else:
       # TODO: Graph.
