@@ -25,7 +25,7 @@ class CoinCoinHandler(object):
     channel = event['event']['channel']
     message_id = event['event']['ts']
     coin = self._find_currency(match_context.lower())
-    if not coin:
+    if not coin and not event['event']['text'].startswith('Sorry'):
       self.SC.send_threaded_reply(channel, message_id, "Sorry, I couldn't find any cryptocurrency named %s" % match_context)
     else:
       # TODO: Graph.
