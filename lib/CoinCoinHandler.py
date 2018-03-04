@@ -16,7 +16,7 @@ class CoinCoinHandler(object):
     print(event['event'])
     text = event['event']['text']
     match = self.REGEX.match(text)
-    if match and event['event']['user'] == 'U1S0XJP0W':
+    if match:
       return (True, [group for group in match.groups() if group][0])
     else:
       return (False,)
