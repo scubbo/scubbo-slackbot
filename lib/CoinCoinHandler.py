@@ -14,6 +14,11 @@ class CoinCoinHandler(object):
 
   def can_handle(self, event):
     print(event['event'])
+
+    # Don't reply to self. It doesn't end well...
+    if event['event']['subtype'] == u'bot_message':
+      return (False,)
+
     text = event['event']['text']
     match = self.REGEX.match(text)
     if match:
@@ -22,8 +27,6 @@ class CoinCoinHandler(object):
       return (False,)
 
   def handle(self, event, match_context):
-    if event['event']['text'].startswith('Sorry') or event['event']['text'].startswith('Cryptocurrency'):
-      return
     channel = event['event']['channel']
     message_id = event['event']['ts']
     coin = self._find_currency(match_context.lower())
