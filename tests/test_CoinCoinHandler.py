@@ -58,6 +58,9 @@ def test_can_handle():
   assert case_9[0]
   assert case_9[1] == 'Neo-Anarchism Is Super Cool'
 
+  case_10 = cch.can_handle({'event':{'text':'Bitcoin','subtype':u'bot_message','channel':TEST_CHANNEL,'ts':TEST_MESSAGE_ID}})
+  assert not case_10[0]
+
 @Mocker(kw='requests_mock')
 def test_handle_1(**kwargs):
   mock = _setup_handle_and_return_mock(kwargs)
@@ -127,7 +130,7 @@ def _assertionsForSingleCall(mock, output_string):
   assert slack_request_data['text'] == output_string
 
 def _build_event(text):
-  return {'event':{'text':text,'user':'U1S0XJP0W','channel':TEST_CHANNEL,'ts':TEST_MESSAGE_ID}}
+  return {'event':{'text':text,'channel':TEST_CHANNEL,'ts':TEST_MESSAGE_ID}}
 
 def _setup_handle_and_return_mock(kwargs):
   requests_mock = kwargs['requests_mock']

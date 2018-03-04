@@ -16,7 +16,7 @@ class CoinCoinHandler(object):
     print(event['event'])
 
     # Don't reply to self. It doesn't end well...
-    if event['event']['subtype'] == u'bot_message':
+    if 'subtype' in event['event'] and event['event']['subtype'] == u'bot_message':
       return (False,)
 
     text = event['event']['text']
