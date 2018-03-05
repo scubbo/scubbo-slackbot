@@ -61,6 +61,9 @@ def test_can_handle():
   case_10 = cch.can_handle({'event':{'text':'Bitcoin','subtype':u'bot_message','channel':TEST_CHANNEL,'ts':TEST_MESSAGE_ID}})
   assert not case_10[0]
 
+  case_11 = cch.can_handle({'event':{'text':'Bitcoin - this is a reply','thread_ts':'123','channel':TEST_CHANNEL,'ts':TEST_MESSAGE_ID}})
+  assert not case_11[0]
+
 @Mocker(kw='requests_mock')
 def test_handle_1(**kwargs):
   mock = _setup_handle_and_return_mock(kwargs)

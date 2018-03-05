@@ -19,6 +19,10 @@ class CoinCoinHandler(object):
     if 'subtype' in event['event'] and event['event']['subtype'] == u'bot_message':
       return (False,)
 
+    # # Don't trigger on anything that's a reply
+    if u'thread_ts' in event['event']:
+      return (False,)
+
     text = event['event']['text']
     match = self.REGEX.match(text)
     if match:
