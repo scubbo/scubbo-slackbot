@@ -49,4 +49,8 @@ class NetrunnerCardHandler(object):
       self.SC.send_attachments_threaded_reply(channel, message_id, attachment)
 
   def _getImageUrl(self, cardId):
-    return loads(requests.get('https://netrunnerdb.com/api/2.0/public/card/' + cardId).text)['data'][0]['image_url']
+    card_data_from_api = loads(requests.get('https://netrunnerdb.com/api/2.0/public/card/' + cardId).text)
+    if 'data' in card_data_from_api and 'image_url' in card_data_from_api['data'][0]:
+      return card_data_from_api['data'][0]['image_url']
+    else:
+      return card_data_from_api['imageUrlTemplate'].replace('{code}', cardId)
