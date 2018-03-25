@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os, re
 import requests
 from json import loads
@@ -41,16 +43,38 @@ class NetrunnerCardHandler(object):
     cards = match_context['cards']
 
     for card in cards:
+      card_data_from_api = loads(requests.get('https://netrunnerdb.com/api/2.0/public/card/' + card['code']).text)
       attachment = {
-        'image_url': self._getImageUrl(card['code']),
-        'title': card['title']
+        'color': self._getColor(card_data_from_api),
+        'image_url': self._getImageUrl(card['code'], card_data_from_api),
+        'title': card['title'],
+        'title_link': 'https://netrunnerdb.com/en/card/' + card['code'],
+        'fields': [
+          {
+            'value': self._parseText(card_data_from_api)
+          }
+          #Netrunnerdb API doesn't give flavour text :(
+        ]
       }
-      print('DEBUG: calling SC.send_attachments_threaded_reply with ' + str(channel) + ':' + str(message_id) + ':' + str(attachment))
       self.SC.send_attachments_threaded_reply(channel, message_id, attachment)
 
-  def _getImageUrl(self, cardId):
-    card_data_from_api = loads(requests.get('https://netrunnerdb.com/api/2.0/public/card/' + cardId).text)
-    if 'data' in card_data_from_api and 'image_url' in card_data_from_api['data'][0]:
-      return card_data_from_api['data'][0]['image_url']
+  def _parseText(self, card_data):
+    bare_text = card_data['data'][0]['text']
+    return bare_text.replace('[subroutine]', '↳')
+
+  def _getColor(self, card_data):
+    try:
+      if card_data['data'][0]['side_code'] == 'runner':
+        return '#ff0000'
+      else:
+        return '#0000ff'
+    except Exception as e:
+      # If we get any exception fetching side_code
+      print(e)
+      return '#333333'
+
+  def _getImageUrl(self, card_id, card_data):
+    if 'data' in card_data and 'image_url' in card_data['data'][0]:
+      return card_data['data'][0]['image_url']
     else:
-      return card_data_from_api['imageUrlTemplate'].replace('{code}', cardId)
+      return card_data['imageUrlTemplate'].replace('{code}', card_id)

@@ -9,9 +9,10 @@ CARDS_URL = 'https://netrunnerdb.com/api/2.0/public/cards'
 CARDS_URL_RESPONSE = dumps({'data':[{'title': 'test card name one', 'code': '1'}]})
 CARD_URL_PREFIX = 'https://netrunnerdb.com/api/2.0/public/card/'
 TITLE_FROM_CARD_DATA = 'test-title-from-card-data'
+TEXT_FROM_CARD_DATA = 'test-text'
 CARD_IMAGE_URL = 'http://card-image-url'
-CARD_DATA_RESPONSE = dumps({'data':[{'image_url':CARD_IMAGE_URL,'title':TITLE_FROM_CARD_DATA}]})
-CARD_DATA_RESPONSE_WITHOUT_IMAGE_URL = dumps({'imageUrlTemplate':'abc{code}def', 'data':[{'title':TITLE_FROM_CARD_DATA}]})
+CARD_DATA_RESPONSE = dumps({'data':[{'image_url':CARD_IMAGE_URL,'title':TITLE_FROM_CARD_DATA,'text':TEXT_FROM_CARD_DATA}]})
+CARD_DATA_RESPONSE_WITHOUT_IMAGE_URL = dumps({'imageUrlTemplate':'abc{code}def', 'data':[{'title':TITLE_FROM_CARD_DATA,'text':TEXT_FROM_CARD_DATA}]})
 POST_MESSAGE_URL = 'https://slack.com/api/chat.postMessage'
 
 TEST_RESPONSE_TOKEN = 'test-response-token'
