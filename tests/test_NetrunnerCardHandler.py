@@ -28,6 +28,8 @@ def test_can_handle(**kwargs):
   assert nch.can_handle({'event':{'text':'[[test card name one]]'}})[0]
   assert nch.can_handle({'event':{'text':'[[test card name foo]]'}})[0] == False
   assert nch.can_handle({'event':{'text':'no square brackets'}})[0] == False
+  assert nch.can_handle({'event':{'text':'[[test card name one]]','channel':u'C4WF0612L'}})[0] == False
+  assert nch.can_handle({'event':{'text':'[[test card name one]]','channel':u'C4WF0612M'}})[0]
 
 @Mocker(kw='requests_mock')
 def test_handle(**kwargs):

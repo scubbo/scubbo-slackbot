@@ -20,6 +20,12 @@ class NetrunnerCardHandler(object):
     Return a tuple of (boolean, context) so that the latter can be
     passed into `handle` if the former is true
     """
+
+    # Block any messages in the #mtg channel
+    channel = event['event'].get('channel', None)
+    if channel is u'C4WF0612L':
+      return (False,)
+
     text = event['event']['text']
 
     matches = self.REGEX.findall(text)
