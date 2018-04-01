@@ -22,8 +22,7 @@ class NetrunnerCardHandler(object):
     """
 
     # Block any messages in the #mtg channel
-    channel = event['event'].get('channel', None)
-    if channel is u'C4WF0612L':
+    if ('channel' in event['event']) and (event['event']['channel'] is u'C4WF0612L'):
       return (False,)
 
     text = event['event']['text']
