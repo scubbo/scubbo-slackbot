@@ -69,7 +69,7 @@ class NetrunnerCardHandler(object):
 
   def _parseText(self, card_data):
     bare_text = card_data['data'][0]['text']
-    return self.STRONG_REGEX.sub('*\g<1>*', bare_text.replace('[subroutine]', '↳'))
+    return self.STRONG_REGEX.sub('*\g<1>*', bare_text.replace('[subroutine]', '↳').replace('[credit]', ':credit:').replace('[trash]', ':trash:'))
 
   def _getColor(self, card_data):
     try:
