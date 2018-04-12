@@ -43,7 +43,7 @@ class NetrunnerCardHandler(object):
             break
       return (bool(responseCards), {'cards':responseCards})
     else:
-      return (False,)
+      return (False, None)
 
   def handle(self, event, match_context):
     channel = event['event']['channel']

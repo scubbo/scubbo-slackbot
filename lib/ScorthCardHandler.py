@@ -9,7 +9,7 @@ class ScorthCardHandler(object):
     self.SC = SlackClient(os.environ['responseToken'])
 
   def can_handle(self, event):
-    return ('scorch' in event['event']['text'].lower(),)
+    return ('scorch' in event['event']['text'].lower(), None)
 
   def handle(self, event, match_context):
     channel = event['event']['channel']
