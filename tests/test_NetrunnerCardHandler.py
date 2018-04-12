@@ -9,7 +9,8 @@ CARDS_URL = 'https://netrunnerdb.com/api/2.0/public/cards'
 CARDS_URL_RESPONSE = dumps({'data':[{'title': 'test card name one', 'code': '1'}]})
 CARD_URL_PREFIX = 'https://netrunnerdb.com/api/2.0/public/card/'
 TITLE_FROM_CARD_DATA = 'test-title-from-card-data'
-TEXT_FROM_CARD_DATA = 'test-text'
+TEXT_FROM_CARD_DATA = 'test-<strong>text</strong>'
+TEXT_FROM_CARD_DATA_PARSED = 'test-*text*'
 CARD_IMAGE_URL = 'http://card-image-url'
 CARD_DATA_RESPONSE = dumps({'data':[{'image_url':CARD_IMAGE_URL,'title':TITLE_FROM_CARD_DATA,'text':TEXT_FROM_CARD_DATA}]})
 CARD_DATA_RESPONSE_WITHOUT_IMAGE_URL = dumps({'imageUrlTemplate':'abc{code}def', 'data':[{'title':TITLE_FROM_CARD_DATA,'text':TEXT_FROM_CARD_DATA}]})
@@ -69,4 +70,5 @@ def test_card_without_image_url(**kwargs):
   slack_request = requests_call_history[-1]
   slack_request_data = loads(slack_request.text)
   assert slack_request_data['attachments'][0]['image_url'] == 'abc01def'
+  assert slack_request_data['attachments'][0]['fields'][0]['value'] == TEXT_FROM_CARD_DATA_PARSED
 

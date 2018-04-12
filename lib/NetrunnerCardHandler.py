@@ -15,6 +15,9 @@ class NetrunnerCardHandler(object):
     self.ALL_CARDS = loads(requests.get('https://netrunnerdb.com/api/2.0/public/cards').text)['data']
     self.SC = SlackClient(os.environ['responseToken'])
 
+    # Strong like ox
+    self.STRONG_REGEX = re.compile(r'<strong>(.*?)</strong>')
+
   def can_handle(self, event):
     """
     Return a tuple of (boolean, context) so that the latter can be
@@ -54,6 +57,7 @@ class NetrunnerCardHandler(object):
         'image_url': self._getImageUrl(card['code'], card_data_from_api),
         'title': card['title'],
         'title_link': 'https://netrunnerdb.com/en/card/' + card['code'],
+        'mrkdwn_in': ['fields'],
         'fields': [
           {
             'value': self._parseText(card_data_from_api)
@@ -65,7 +69,7 @@ class NetrunnerCardHandler(object):
 
   def _parseText(self, card_data):
     bare_text = card_data['data'][0]['text']
-    return bare_text.replace('[subroutine]', '↳')
+    return self.STRONG_REGEX.sub('*\g<1>*', bare_text.replace('[subroutine]', '↳'))
 
   def _getColor(self, card_data):
     try:
