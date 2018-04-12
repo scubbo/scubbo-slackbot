@@ -18,6 +18,7 @@ class DebugPrintDecorator(object):
 class SlackClient(object):
 
   POST_MESSAGE_URL = 'https://slack.com/api/chat.postMessage'
+  REACT_URL = 'https://slack.com/api/reactions.add'
 
   def __init__(self, token):
     self.headers = {
@@ -73,6 +74,15 @@ class SlackClient(object):
     for attachment in attachments:
       data['attachments'].append(attachment)
     return self._post_to_post_message(data)
+
+  @DebugPrintDecorator
+  def react(self, channel, message_timestamp, name):
+    data = {
+      'channel': channel,
+      'timestamp': message_timestamp,
+      'name': name
+    }
+    return requests.post(self.REACT_URL, json.dumps(data), headers = self.headers)
 
   def _post_to_post_message(self, data):
     return requests.post(self.POST_MESSAGE_URL, json.dumps(data), headers = self.headers)
