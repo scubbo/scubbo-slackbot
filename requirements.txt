@@ -1,3 +1,3 @@
-BeautifulSoup
+BeautifulSoup4
 requests
 requests-mock
