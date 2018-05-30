@@ -6,30 +6,20 @@ from bs4 import BeautifulSoup
 import requests
 from terminaltables import AsciiTable
 
-from slackClient import SlackClient
+from lib.slackClient import SlackClient
 
 
-class UpcomingProductHandler(object):
+class UpcomingProductsHandler(object):
 
     def __init__(self):
         self.SC = SlackClient(os.environ['responseToken'])
 
     def can_handle(self, event):
-        return event['event']['text'].lower() == '!upcoming'
+        return (event['event']['text'].lower() == '!upcoming', None)
 
     def handle(self, event, match_context):
         channel = event['event']['channel']
-        message_id = event['event']['ts']
-        attachment = {
-            'mrkdwn_in': ['fields'],
-            'fields': [
-                {
-                    'value': self.get_products()
-                }
-            ]
-        }
-        self.SC.send_attachments_threaded_reply(
-            channel, message_id, attachment)
+        self.SC.send_message(channel, self.get_products())
 
     def get_products(self):
         r = requests.get('https://www.fantasyflightgames.com/en/upcoming/')
