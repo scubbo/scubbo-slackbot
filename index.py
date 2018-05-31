@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os, re, sys
-import urllib2
 import requests
 from json import loads, dumps
 sys.path.append('lib')
