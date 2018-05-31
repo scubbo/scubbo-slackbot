@@ -10,9 +10,11 @@ HANDLER_NAMES = [f[:-3] for f in os.listdir('lib') if f.endswith('Handler.py')]
 HANDLERS = map(lambda x: getattr(__import__(x), x)(), HANDLER_NAMES)
 
 def handler(event, context):
+  print('Received event: ' + str(event))
   for handler in HANDLERS:
     can_handle = handler.can_handle(event)
     if (can_handle[0]):
+      print(handler.__module__ + ' can handle the event')
       handler.handle(event, can_handle[1])
 
   return {
