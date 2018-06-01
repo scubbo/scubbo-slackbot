@@ -25,12 +25,16 @@ class CoinCoinHandler(object):
 
     text = event['event']['text']
     match = self.REGEX.match(text)
+    print("Match was:")
+    print(match)
     if match:
       return (True, [group for group in match.groups() if group][0])
     else:
       return (False,)
 
   def handle(self, event, match_context):
+    print("CoinCoinHandler is handling")
+    print(event)
     channel = event['event']['channel']
     message_id = event['event']['ts']
     coin = self._find_currency(match_context.lower())
