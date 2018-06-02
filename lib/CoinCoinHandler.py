@@ -50,7 +50,10 @@ class CoinCoinHandler(object):
     return "Cryptocurrency {name!s} is worth ${price_usd!s}. Its value has changed {percent_change_7d!s}%% in the last 7 days.".format(**coin)
 
   def _find_currency(self, search_term, start_index=0):
-    response = loads(requests.get(API_REQUEST_STRING % str(start_index)).text)
+    responseText = requests.get(API_REQUEST_STRING % str(start_index)).text
+    print("ResponseText was")
+    print(responseText)
+    response = loads(responseText)
     if 'error' in response:
       return None
     for coin in response:
