@@ -1,3 +1,14 @@
+import os, sys
+print('Inside ' + __file__)
+for path in sys.path:
+    print(path)
+    if (os.path.exists(path)):
+        print(os.listdir(path))
+        for f in os.listdir(path):
+          if f.startswith('requests'):
+            print('Found requests!')
+    print()
+
 import json
 import requests
 
