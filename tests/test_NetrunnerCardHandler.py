@@ -6,7 +6,7 @@ from json import dumps, loads
 from lib.NetrunnerCardHandler import NetrunnerCardHandler
 
 CARDS_URL = 'https://netrunnerdb.com/api/2.0/public/cards'
-CARDS_URL_RESPONSE = dumps({'data':[{'title': 'test card name one', 'code': '1'}]})
+CARDS_URL_RESPONSE = dumps({'data':[{'title': 'test card name one', 'code': '1'}, {'title': 'one card test', 'code': '2'}]})
 CARD_URL_PREFIX = 'https://netrunnerdb.com/api/2.0/public/card/'
 TITLE_FROM_CARD_DATA = 'test-title-from-card-data'
 TEXT_FROM_CARD_DATA = 'test-<strong>text</strong> [credit] [trash] [click]'
@@ -31,6 +31,13 @@ def test_can_handle(**kwargs):
   assert nch.can_handle({'event':{'text':'no square brackets'}})[0] == False
   assert nch.can_handle({'event':{'text':'[[test card name one]]','channel':u'C4WF0612L'}})[0] == False
   assert nch.can_handle({'event':{'text':'[[test card name one]]','channel':u'C4WF0612M'}})[0]
+
+@Mocker(kw='requests_mock')
+def test_picks_correct_card_when_multiple_match(**kwargs):
+  kwargs['requests_mock'].get(CARDS_URL, text=CARDS_URL_RESPONSE)
+  nch = NetrunnerCardHandler()
+  assert nch.can_handle({'event':{'text':'[[one]]'}})[1]['cards'][0] == {'title': 'one card test', 'code': '2'}
+  assert nch.can_handle({'event':{'text':'[[test]]'}})[1]['cards'][0] == {'title': 'test card name one', 'code': '1'}
 
 @Mocker(kw='requests_mock')
 def test_handle(**kwargs):
@@ -71,4 +78,3 @@ def test_card_without_image_url(**kwargs):
   slack_request_data = loads(slack_request.text)
   assert slack_request_data['attachments'][0]['image_url'] == 'abc01def'
   assert slack_request_data['attachments'][0]['fields'][0]['value'] == TEXT_FROM_CARD_DATA_PARSED
-

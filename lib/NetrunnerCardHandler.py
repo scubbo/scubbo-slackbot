@@ -33,15 +33,28 @@ class NetrunnerCardHandler(object):
     matches = self.REGEX.findall(text)
 
     if matches:
-      responseCards = []
+      responseCards = {}
       for match in matches:
         if match in self.ABBREVIATIONS:
           match = self.ABBREVIATIONS[match]
         for card in self.ALL_CARDS:
-          if all([c in card['title'].lower() for c in match.lower().split()]):
-            responseCards.append(card)
-            break
-      return (bool(responseCards), {'cards':responseCards})
+          split_matches = match.lower().split()
+          if all([c in card['title'].lower() for c in split_matches]):
+            index_of_first_match = card['title'].lower().index(split_matches[0])
+            if match not in responseCards:
+              responseCards[match] = []
+            responseCards[match].append((index_of_first_match, card))
+
+      # We got the full set of potential cards that *could* match for a
+      # given search term. Since it's most likely that people will search
+      # for the first letters of a cardname, prioritize the cardname
+      # that has the match occurring most early
+      for key in responseCards:
+        responseCards[key].sort(key=lambda x: x[0])
+
+      cardsToReturn = list(map(lambda x: responseCards[x][0][1], responseCards.keys()))
+
+      return (bool(responseCards), {'cards':cardsToReturn})
     else:
       return (False, None)
 
