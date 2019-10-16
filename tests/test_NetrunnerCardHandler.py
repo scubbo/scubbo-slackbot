@@ -78,3 +78,9 @@ def test_card_without_image_url(**kwargs):
   slack_request_data = loads(slack_request.text)
   assert slack_request_data['attachments'][0]['image_url'] == 'abc01def'
   assert slack_request_data['attachments'][0]['fields'][0]['value'] == TEXT_FROM_CARD_DATA_PARSED
+
+@Mocker(kw='requests_mock')
+def test_only_single_response(**kwargs):
+    kwargs['requests_mock'].get(CARDS_URL, text='{"data":[{"title":"imp"}, {"title":"trebuchet"}]}')
+    nch = NetrunnerCardHandler()
+    assert len(nch.can_handle({'event': {'text': 'Hey anyone know if i can [[imp]] a card after [[trebuchet]] fires?'}})) == 2
